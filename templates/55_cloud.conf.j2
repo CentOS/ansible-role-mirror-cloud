@@ -1,0 +1,37 @@
+<VirtualHost *:80>
+ ServerAdmin webmaster@centos.org
+ ServerName cloud.centos.org
+ CustomLog logs/cloud.centos.org_access.log combined
+ ErrorLog logs/cloud.centos.org_error.log
+ DocumentRoot {{ mirror_cloud_local_path }}
+ AddDescription "{{ inventory_hostname }}" server.id
+ ReadmeName /FOOTER.html
+ HeaderName /HEADER_AD.html
+ IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t FOOTER.html
+
+ Header always set X-Xss-Protection "1; mode=block"
+ Header always set X-Content-Type-Options "nosniff"
+ Header always set Referrer-Policy "same-origin"
+ Header always set X-Frame-Options "SAMEORIGIN"
+
+<Location "/.well-known/">
+    ProxyPass "http://cephas.centos.org/.well-known/"
+</Location>
+
+
+#Directory Permissions
+ <Directory "{{ mirror_cloud_local_path }}">
+  AllowOverride Indexes
+  Options Indexes FollowSymLinks 
+  <IfVersion < 2.4>
+    Order allow,deny
+    Allow from all
+  </IfVersion>
+  <IfVersion >= 2.4>
+    IndexOptions FancyIndexing VersionSort NameWidth=* HTMLTable Charset=UTF-8
+    Require all granted
+  </IfVersion>
+ </Directory>
+
+</VirtualHost>
+

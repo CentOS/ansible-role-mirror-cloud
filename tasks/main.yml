@@ -1,1 +1,50 @@
-# Defaults tasks for role mirror-cloud
+- include_tasks: mirror-user.yml
+
+- import_role:
+    name: httpd
+  vars:
+    httpd_tls: True
+
+- import_role:
+    name: httpd
+    tasks_from: pki-tls
+  vars:
+    pki_hostname: cloud.centos.org
+  tags:
+    - tls
+
+- name: Adding vhost file
+  template:
+    src: "{{ item }}.j2"
+    dest: "/etc/httpd/conf.d/{{ item }}"
+  with_items:
+    - 55_cloud.conf
+    - ssl-cloud.conf
+  notify:
+    - restart_httpd
+
+- name: Ensuring some selinux booleans are enabled
+  seboolean:
+    name: "{{ item }}"
+    persistent: yes
+    state: yes
+  with_items:
+    - httpd_enable_homedirs
+    - httpd_read_user_content
+
+- name: Script to gather mirror content
+  template:
+    src: rsync-master-cloud.j2
+    dest: "/home/{{ mirror_cloud_local_user }}-scripts/rsync-master-cloud"
+    mode: 0755
+
+- name: Cron job to rsync content from upstream node
+  cron:
+    name: "CentOS mirror cloud rsync job"
+    job: "/home/{{ mirror_cloud_local_user }}-scripts/rsync-master-cloud {{ mirror_cloud_rsync_from }} > /dev/null 2>&1"
+    minute: "*/12"
+    user: "{{ mirror_cloud_local_user }}"
+  tags:
+    - cron
+
+- include_tasks: monitoring.yml  

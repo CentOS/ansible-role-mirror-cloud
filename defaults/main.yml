@@ -1,1 +1,17 @@
 # Defaults variables for role mirror-cloud
+
+# default path where to sync content to
+mirror_cloud_local_path: /home/centos-cloud/
+
+# Default user owning all the files
+mirror_cloud_local_user: centos
+
+# From which node do we want to rsync from
+mirror_cloud_rsync_from: main.centos.org
+
+# Zabbix/monitoring part
+mirror_cloud_zabbix_templates:
+  - Template CentOS cloud mirror server
+mirror_cloud_zabbix_groups:
+  - CentOS cloud mirrors
+
