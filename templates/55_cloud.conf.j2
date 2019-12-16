@@ -5,8 +5,8 @@
  ErrorLog logs/cloud.centos.org_error.log
  DocumentRoot {{ mirror_cloud_local_path }}
  AddDescription "{{ inventory_hostname }}" server.id
- ReadmeName /FOOTER.html
- HeaderName /HEADER_AD.html
+ ReadmeName /centos-design/footer.html
+ HeaderName /centos-design/header-centos-cloud-images.html
  IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t FOOTER.html
 
  Header always set X-Xss-Protection "1; mode=block"
@@ -14,9 +14,10 @@
  Header always set Referrer-Policy "same-origin"
  Header always set X-Frame-Options "SAMEORIGIN"
 
-<Location "/.well-known/">
-    ProxyPass "http://cephas.centos.org/.well-known/"
-</Location>
+ #Redirecting to https now
+ RewriteCond $1 !^.well-known
+ RewriteCond %{HTTPS} !=on
+ RewriteRule ^/?(.*) https://cloud.centos.org/$1 [R,L]
 
 
 #Directory Permissions
@@ -28,7 +29,8 @@
     Allow from all
   </IfVersion>
   <IfVersion >= 2.4>
-    IndexOptions FancyIndexing VersionSort NameWidth=* HTMLTable Charset=UTF-8
+    IndexOptions NameWidth=* +SuppressHTMLPreamble
+    IndexStyleSheet "/centos-design/css/centos-listindex.css"
     Require all granted
   </IfVersion>
  </Directory>

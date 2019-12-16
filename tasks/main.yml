@@ -4,6 +4,8 @@
     name: httpd
   vars:
     httpd_tls: True
+    httpd_html_autoindex_title: "CentOS Cloud images"
+    httpd_html_autoindex_content: "{{ mirror_cloud_httpd_header }}"
 
 - import_role:
     name: httpd

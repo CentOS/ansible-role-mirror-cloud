@@ -9,6 +9,13 @@ mirror_cloud_local_user: centos
 # From which node do we want to rsync from
 mirror_cloud_rsync_from: main.centos.org
 
+# some httpd settings
+mirror_cloud_httpd_header: |
+  <div class="alert alert-success" role="alert">
+  This directory tree contains CentOS Linux and Stream cloud images.<br>
+  </div>
+
+
 # Zabbix/monitoring part
 mirror_cloud_zabbix_templates:
   - Template CentOS cloud mirror server
