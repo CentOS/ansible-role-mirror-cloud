@@ -15,6 +15,20 @@ mirror_cloud_httpd_header: |
   This directory tree contains CentOS Linux and Stream cloud images.<br>
   </div>
 
+mirror_cloud_header_page:
+  title: 'CentOS Cloud Images'
+  title_lead: ''
+  with_manifestation: 'CentOS Cloud Images'
+  with_content:
+    - element: p
+      element_class: alert alert-success
+      element_content: >-
+        This directory tree contains CentOS Stream cloud images.<br>
+    - element: p
+      element_class: alert alert-danger
+      element_content: >-
+        Warning: older releases still present but unsafe to use : CentOS Linux releases 6 ,7 and 8 , 8-stream<br>
+        Available here just for academic purposes.
 
 # Zabbix/monitoring part
 mirror_cloud_zabbix_templates:

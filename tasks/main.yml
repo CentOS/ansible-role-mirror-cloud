@@ -4,8 +4,14 @@
     name: httpd
   vars:
     httpd_tls: True
-    httpd_html_autoindex_title: "CentOS Cloud images"
-    httpd_html_autoindex_content: "{{ mirror_cloud_httpd_header }}"
+
+- import_role:
+    name: httpd
+    tasks_from: custom-header
+  vars: 
+    - httpd_custom_header_page: "{{ mirror_cloud_header_page }}"
+  tags:
+    - theme
 
 - import_role:
     name: httpd
