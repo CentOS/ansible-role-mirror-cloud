@@ -1,6 +1,10 @@
 <VirtualHost *:443>
  ServerAdmin webmaster@centos.org
+{% if mirror_cloud_httpd_origin_node %}
+ ServerName {{ mirror_cloud_httpd_origin_hostname }}
+{% else %}
  ServerName cloud.centos.org
+{% endif %}
  DocumentRoot {{ mirror_cloud_local_path }}
  ReadmeName /centos-design/footer.html
  HeaderName /centos-design/header-centos-cloud-images.html
@@ -12,10 +16,12 @@
  Header always set Referrer-Policy "same-origin"
  Header always set X-Frame-Options "SAMEORIGIN"
 
-<Location "/.well-known/">
-    ProxyPass "http://cephas.centos.org/.well-known/"
-</Location>
-
+{% if mirror_cloud_httpd_origin_node %}
+# Let's ensure that we'll deny request if secretheader shared with cdn upstream doesn't match
+RewriteEngine on
+RewriteCond %{HTTP:X-CDNSecretHeader} !^{{ mirror_cloud_httpd_origin_secret }}$
+RewriteRule ^ - [F]
+{% endif %}
 
 #Directory Permissions
  <Directory "{{ mirror_cloud_local_path }}">
@@ -39,9 +45,15 @@ SSLEngine on
 {{ httpd_tls_ciphers }}
 
 # Important that we point to the same cert as name vhosts
+{% if mirror_cloud_httpd_origin_node %}
+SSLCertificateFile /etc/pki/tls/certs/{{ mirror_cloud_httpd_origin_hostname }}.crt
+SSLCertificateKeyFile /etc/pki/tls/private/{{ mirror_cloud_httpd_origin_hostname }}.key
+SSLCertificateChainFile /etc/pki/tls/certs/{{ mirror_cloud_httpd_origin_hostname }}-CAChain.crt
+{% else %}
 SSLCertificateFile /etc/pki/tls/certs/cloud.centos.org.crt
 SSLCertificateKeyFile /etc/pki/tls/private/cloud.centos.org.key
 SSLCertificateChainFile /etc/pki/tls/certs/cloud.centos.org-CAChain.crt
+{% endif %}
 
 <Files ~ "\.(cgi|shtml|phtml|php3?)$">
     SSLOptions +StdEnvVars

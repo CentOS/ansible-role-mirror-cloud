@@ -1,4 +1,7 @@
 - include_tasks: mirror-user.yml
+  tags:
+    - user
+    - content
 
 - import_role:
     name: httpd
@@ -20,6 +23,16 @@
     pki_hostname: cloud.centos.org
   tags:
     - tls
+  when: not mirror_cloud_httpd_origin_node  
+
+- import_role:
+    name: httpd
+    tasks_from: pki-tls
+  vars:
+    pki_hostname: "{{ mirror_cloud_httpd_origin_hostname }}"
+  tags:
+    - tls
+  when: mirror_cloud_httpd_origin_node  
 
 - name: Adding vhost file
   template:
@@ -31,6 +44,8 @@
     - ssl-cloud.conf
   notify:
     - restart_httpd
+  tags:
+    - httpd_config
 
 - name: Ensuring some selinux booleans are enabled
   seboolean:
