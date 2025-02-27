@@ -43,7 +43,7 @@
     - 55_cloud.conf
     - ssl-cloud.conf
   notify:
-    - restart_httpd
+    - reload_httpd
   tags:
     - httpd_config
 
@@ -61,6 +61,8 @@
     src: rsync-master-cloud.j2
     dest: "/home/{{ mirror_cloud_local_user }}-scripts/rsync-master-cloud"
     mode: 0755
+  tags:
+    - scripts
 
 - name: Cron job to rsync content from upstream node
   cron:

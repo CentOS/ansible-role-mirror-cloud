@@ -21,6 +21,5 @@
     mode: 0755
   with_items: 
     - "{{ mirror_cloud_local_path }}"  
-    - "{{ mirror_cloud_scos_local_path }}"
   tags:
     - content

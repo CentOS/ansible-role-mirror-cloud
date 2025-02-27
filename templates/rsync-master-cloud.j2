@@ -7,7 +7,21 @@ running="yes"
 
 do_rsync() {
 
-rsync --force --partial --delete-after --exclude ".~tmp~" --exclude ".*iso.*" --exclude ".*.rpm.*" --exclude FOOTER.html --delay-updates --exclude repodata --exclude headers --timeout=2400 -avzH $1::centos-cloud/ /home/centos-cloud/  > /home/centos-scripts/$SYNCTIME-cloud.log 2>&1 
+rsync --force --partial --delete-after --filter '- scos'  --exclude ".~tmp~" --exclude ".*iso.*" --exclude ".*.rpm.*" --exclude FOOTER.html --delay-updates --exclude repodata --exclude headers --timeout=2400 -avzH $1::centos-cloud/ /home/centos-cloud/  > /home/centos-scripts/$SYNCTIME-cloud.log 2>&1 
+
+{% if mirror_cloud_scos %}
+rsync --delete-after --delay-updates -avH {{ mirror_cloud_scos_rsync_from }}/ {{ mirror_cloud_local_path }}/centos/scos/ >>  /home/centos-scripts/$SYNCTIME-cloud.log 2>&1 
+{% endif %}
+
+pushd /home/centos-scripts/ 2>&1 >/dev/null
+for log in $(ls *.log)
+  do
+   if [ "$log" != "${SYNCTIME}-cloud.log" ]; then
+    rm -f $log
+   fi
+  done
+popd >/dev/null
+ 
 }
 
 if [ -z $1 ]; then 

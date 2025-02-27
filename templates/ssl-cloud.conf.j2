@@ -2,13 +2,14 @@
  ServerAdmin webmaster@centos.org
 {% if mirror_cloud_httpd_origin_node %}
  ServerName {{ mirror_cloud_httpd_origin_hostname }}
+ ServerAlias cloud.centos.org
 {% else %}
  ServerName cloud.centos.org
 {% endif %}
  DocumentRoot {{ mirror_cloud_local_path }}
  ReadmeName /centos-design/footer.html
  HeaderName /centos-design/header-centos-cloud-images.html
- IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t FOOTER.html
+ IndexIgnore .??* *~ *# HEADER* RCS CVS *,v *,t FOOTER.html
 
  Header always set Strict-Transport-Security "max-age=31536000"
  Header always set X-Xss-Protection "1; mode=block"

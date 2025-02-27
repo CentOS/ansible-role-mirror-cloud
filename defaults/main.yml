@@ -3,14 +3,16 @@
 # default path where to sync content to
 mirror_cloud_local_path: /home/centos-cloud/
 
-# specific case for Stream CoreOS (getting content from different root)
-mirror_cloud_scos_local_path: /home/centos-scos
-
 # Default user owning all the files
 mirror_cloud_local_user: centos
 
 # From which node do we want to rsync from
 mirror_cloud_rsync_from: main.centos.org
+
+# specific case for Stream CoreOS (getting content from different root)
+# Do we want to mirror scos content ?
+mirror_cloud_scos: True
+mirror_cloud_scos_rsync_from: origin.scos.centos.org::rsync_module/
 
 # CDN section, if used as origin server
 # Are we origin node (True|False) and if so, under which specific hostname
